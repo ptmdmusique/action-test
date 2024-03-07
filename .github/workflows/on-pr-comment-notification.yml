@@ -1,0 +1,42 @@
+name: Inform user available commands
+
+on: pull_request
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BOT_NAME: github-actions[bot]
+
+jobs:
+  initialize:
+    runs-on: [self-hosted]
+    steps:
+      - name: Initialize comment bot
+        id: comment_bot
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const comments = await github.issues.listComments({
+              issue_number,
+              owner,
+              repo,
+            });
+            const commentType = "Available commands";
+            const botComment = comments.data.find(comment => comment.body.includes(commentType));
+            if (!botComment) {
+              const body = `
+                **${commentType}**
+                  - \`command--joke\` - log some random joke
+                **To run**
+                  Make a new comment on the PR with the command you want to run
+              `
+              const comment = await github.issues.createComment({
+                issue_number,
+                owner,
+                repo,
+                body
+              });
+            }

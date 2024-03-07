@@ -1,0 +1,36 @@
+name: Check new comment for commands
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  run-commands:
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: [self-hosted]
+    steps:
+      - name: run joke
+        if: contains(github.event.comment.body, 'command--joke')
+        run: npm run joke
+
+      - name: notify joke
+        if: contains(github.event.comment.body, 'command--joke')
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const commentType = "Running command";
+            const body = `
+              **${commentType}**
+              Running get joke
+            `
+            const comment = await github.issues.createComment({
+              issue_number,
+              owner,
+              repo,
+              body
+            });

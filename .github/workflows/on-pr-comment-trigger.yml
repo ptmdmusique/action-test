@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: run joke
-        if: contains(github.event.comment.body, 'command--joke')
-        run: npm run joke
 
       - name: notify joke
         if: contains(github.event.comment.body, 'command--joke')
@@ -26,7 +23,7 @@ jobs:
             const commentType = "Running command";
             const body = `
               **${commentType}**
-              Running `get joke` command
+              Running \`get joke\` command 🧪
             `
             const comment = await github.issues.createComment({
               issue_number,
@@ -34,3 +31,31 @@ jobs:
               repo,
               body
             });
+
+      - name: run joke
+        if: contains(github.event.comment.body, 'command--joke')
+        run: npm run joke
+
+      - name: notify random sum
+        if: contains(github.event.comment.body, 'command--random-sum')
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const commentType = "Running command";
+            const body = `
+              **${commentType}**
+              Running \`random sum\` command 🧪
+            `
+            const comment = await github.issues.createComment({
+              issue_number,
+              owner,
+              repo,
+              body
+            });
+
+      - name: run joke
+        if: contains(github.event.comment.body, 'command--random-sum')
+        run: npm run random-sum

@@ -14,7 +14,6 @@ jobs:
         id: comment_bot
         uses: actions/github-script@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue_number = context.issue.number;
             const owner = context.repo.owner;

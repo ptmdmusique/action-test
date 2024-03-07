@@ -10,6 +10,7 @@ jobs:
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: run joke
         if: contains(github.event.comment.body, 'command--joke')
         run: npm run joke

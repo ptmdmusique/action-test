@@ -12,18 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: notify joke
-        if: contains(github.event.comment.body, 'command--joke')
+      - name: notify command
         uses: actions/github-script@v3
         with:
           script: |
+            const commentBody = context.payload.comment.body;
+            const commandToRunList = [];
+            if (commentBody.includes('command--joke')) {
+              commandToRunList.push('joke');
+            }
+            if (commentBody.includes('command--random-sum')) {
+              commandToRunList.push('random-sum');
+            }
+
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const commentType = "Running command";
             const body = `
-              **${commentType}**
-              Running \`get joke\` command 🧪
+              **${commentType}** 🧪
+              - Commands to run: ${commandToRunList.join(', ')}
             `
             const comment = await github.issues.createComment({
               issue_number,
@@ -36,26 +44,6 @@ jobs:
         if: contains(github.event.comment.body, 'command--joke')
         run: npm run joke
 
-      - name: notify random sum
-        if: contains(github.event.comment.body, 'command--random-sum')
-        uses: actions/github-script@v3
-        with:
-          script: |
-            const issue_number = context.issue.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const commentType = "Running command";
-            const body = `
-              **${commentType}**
-              Running \`random sum\` command 🧪
-            `
-            const comment = await github.issues.createComment({
-              issue_number,
-              owner,
-              repo,
-              body
-            });
-
-      - name: run joke
+      - name: run random sum
         if: contains(github.event.comment.body, 'command--random-sum')
         run: npm run random-sum

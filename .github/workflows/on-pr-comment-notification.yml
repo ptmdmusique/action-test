@@ -27,10 +27,11 @@ jobs:
             const botComment = comments.data.find(comment => comment.body.includes(commentType));
             if (!botComment) {
               const body = `
-                **${commentType}**
-                  - \`command--joke\` - log some random joke
-                **To run**
-                  Make a new comment on the PR with the command you want to run
+              **${commentType}**
+                - \`command--joke\` - log some random joke
+
+              **To run**
+                Make a new comment on the PR with the command you want to run
               `
               const comment = await github.issues.createComment({
                 issue_number,

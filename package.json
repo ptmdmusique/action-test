@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "scripts": {
+    "joke": "node get-joke.js"
+  }
+}

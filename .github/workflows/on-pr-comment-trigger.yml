@@ -72,8 +72,14 @@ jobs:
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
+            const runId = context.runId;
+            const baseUrl = context.payload.repository.html_url;
+
             const commentType = "Running command";
-            const body = `**${commentType}** ✅ Done!`;
+            const body = `
+            **${commentType}** ✅ Done!
+            You can checkout the run result at [Actions](${baseUrl}/actions/runs/${runId})
+            `;
             const comment = await github.issues.createComment({
               issue_number,
               owner,

@@ -16,6 +16,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
+            console.log("ASDASD", context)
             const commentBody = context.payload.comment.body;
             const commandToRunList = [];
             if (commentBody.includes('command--joke')) {

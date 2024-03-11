@@ -29,6 +29,7 @@ jobs:
               const body = `
               **${commentType}**
                 - \`command--joke\` - log some random joke
+                - \`command--random-sum\` - log some random sum
 
               **To run**
                 Make a new comment on the PR with the command you want to run

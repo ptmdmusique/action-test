@@ -11,23 +11,69 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: run joke
-        if: contains(github.event.comment.body, 'command--joke')
-        run: npm run joke
 
-      - name: notify joke
-        if: contains(github.event.comment.body, 'command--joke')
+      - name: notify command
         uses: actions/github-script@v3
         with:
           script: |
+            const commentBody = context.payload.comment.body;
+            const commandToRunList = [];
+            if (commentBody.includes('command--joke')) {
+              commandToRunList.push('joke');
+            }
+            if (commentBody.includes('command--random-sum')) {
+              commandToRunList.push('random-sum');
+            }
+
+            if (commandToRunList.length === 0) {
+              return;
+            }
+
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const commentType = "Running command";
             const body = `
-              **${commentType}**
-              Running `get joke` command
+              **${commentType}** 🧪 Starting...
+              ${commandToRunList.map(command => `- ${command}`).join('\n')}
             `
+            const comment = await github.issues.createComment({
+              issue_number,
+              owner,
+              repo,
+              body
+            });
+
+      - name: run joke
+        if: contains(github.event.comment.body, 'command--joke')
+        run: npm run joke
+
+      - name: run random sum
+        if: contains(github.event.comment.body, 'command--random-sum')
+        run: npm run random-sum
+
+      - name: notify done
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const commentBody = context.payload.comment.body;
+            const commandToRunList = [];
+            if (commentBody.includes('command--joke')) {
+              commandToRunList.push('joke');
+            }
+            if (commentBody.includes('command--random-sum')) {
+              commandToRunList.push('random-sum');
+            }
+
+            if (commandToRunList.length === 0) {
+              return;
+            }
+
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const commentType = "Running command";
+            const body = `**${commentType}** ✅ Done!`;
             const comment = await github.issues.createComment({
               issue_number,
               owner,

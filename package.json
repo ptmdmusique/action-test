@@ -1,6 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "joke": "node get-joke.js"
+    "joke": "node get-joke.js",
+    "random-sum": "node random-sum.js"
   }
 }

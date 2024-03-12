@@ -15,7 +15,6 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            console.log("ASDASD", context)
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;

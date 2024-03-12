@@ -4,6 +4,9 @@ on:
   issue_comment:
     types: [created, edited]
 
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
 jobs:
   run-commands:
     # This job only runs for pull request comments
@@ -57,12 +60,45 @@ jobs:
         # Cherry pick all the commits in the current branch to a new branch named `<cur-branch-name>--cherry-pick` `cherry-pick` branch
         # All the commits are taken from the current branch
         run: |
-          git checkout -b ${{ github.head_ref }}--cherry-pick
+          git fetch origin master
+          git checkout master
+          git checkout -b ${{ github.head_ref || github.ref_name }}--cherry-pick
           git cherry-pick $(git merge-base master ${{ github.event.pull_request.head.sha }})..${{ github.event.pull_request.head.sha }} --oneline
-          git push origin ${{ github.head_ref }}--cherry-pick
+          git push origin ${{ github.head_ref || github.ref_name }}--cherry-pick
 
-        # Intentionally create a new comment to trigger notification
-        #   since test can take a long time to run
+      - name: cherry-pick pr creation
+        if: contains(github.event.comment.body, 'command--cherry-pick')
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const prBranchName = process.env.BRANCH_NAME;
+            const commentBody = context.payload.comment.body;
+            const prTitle = `Cherry pick from ${prBranchName} to ${context.payload.pull_request.base.ref}`;
+            const prBody = `
+            This PR is created to cherry pick all the commits from ${prBranchName} to ${context.payload.pull_request.base.ref}.
+            `;
+            const pr = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: prTitle,
+              head: `${prBranchName}--cherry-pick`,
+              base: "master",
+              body: prBody
+            });
+            const commentType = "Cherry picking PR";
+            const body = `
+            **${commentType}** ✅ Done!
+            You can checkout the run result at [PR](${pr.data.html_url})
+            `;
+            const comment = await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
+
+      # Intentionally create a new comment to trigger notification
+      #   since test can take a long time to run
       - name: report error
         # Run when any of the command fails
         if: always() && failure()

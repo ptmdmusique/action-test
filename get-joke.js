@@ -10,6 +10,7 @@ const jokes = [
   "What do you call a belt made out of watches? A waist of time.",
   "How many apples grow on a tree? All of them.",
   "I told my wife she should embrace her mistakes. She gave me a hug.",
+  "I told my computer I needed a break. Now it won’t stop sending me Kit-Kats.",
 ];
 
 const getRandomJoke = () => {

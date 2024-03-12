@@ -50,8 +50,7 @@ jobs:
 
       - name: run random sum
         if: contains(github.event.comment.body, 'command--random-sum')
-        # run: npm run random-sum
-        run: npm run random
+        run: npm run random-sum
 
         # Intentionally create a new comment to trigger notification
         #   since test can take a long time to run

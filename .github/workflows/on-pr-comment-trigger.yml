@@ -27,6 +27,9 @@ jobs:
             if (commentBody.includes('command--random-sum')) {
               commandToRunList.push('random-sum');
             }
+            if (commentBody.includes('command--cherry-pick')) {
+              commandToRunList.push('cherry-pick');
+            }
 
             if (commandToRunList.length === 0) {
               return;
@@ -60,10 +63,12 @@ jobs:
         # Cherry pick all the commits in the current branch to a new branch named `<cur-branch-name>--cherry-pick` `cherry-pick` branch
         # All the commits are taken from the current branch
         run: |
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           git fetch origin master
           git checkout master
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           git checkout -b $BRANCH_NAME--cherry-pick
-          git cherry-pick $(git merge-base master $$BRANCH_NAME)..$$BRANCH_NAME --oneline
+          git cherry-pick $(git merge-base master $BRANCH_NAME)..$BRANCH_NAME --oneline
           git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation

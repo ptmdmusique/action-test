@@ -50,7 +50,35 @@ jobs:
 
       - name: run random sum
         if: contains(github.event.comment.body, 'command--random-sum')
-        run: npm run random-sum
+        # run: npm run random-sum
+        run: npm run random
+
+        # Intentionally create a new comment to trigger notification
+        #   since test can take a long time to run
+      - name: report error
+        # Run when any of the command fails
+        if: always() && failure()
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const runId = context.runId;
+            const baseUrl = context.payload.repository.html_url;
+
+            const commentType = "Running command";
+            const body = `
+            **${commentType}** 🚫 Failed
+            You can checkout the run result at [Actions](${baseUrl}/actions/runs/${runId})
+            `;
+            const comment = await github.issues.createComment({
+              issue_number,
+              owner,
+              repo,
+              body
+            });
 
       - name: notify done
         uses: actions/github-script@v3

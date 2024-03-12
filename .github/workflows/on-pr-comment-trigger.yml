@@ -14,10 +14,12 @@ jobs:
 
       # Store the branch name in an environment variable called BRANCH_NAME
       - name: set env
-        run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})"
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${BRANCH_NAME}"
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            core.setOutput('BRANCH_NAME', branchName);
 
       - name: notify command
         uses: actions/github-script@v3

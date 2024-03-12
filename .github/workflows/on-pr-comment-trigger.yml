@@ -62,9 +62,9 @@ jobs:
         run: |
           git fetch origin master
           git checkout master
-          git checkout -b ${{ github.head_ref || github.ref_name }}--cherry-pick
-          git cherry-pick $(git merge-base master ${{ github.event.pull_request.head.sha }})..${{ github.event.pull_request.head.sha }} --oneline
-          git push origin ${{ github.head_ref || github.ref_name }}--cherry-pick
+          git checkout -b $BRANCH_NAME--cherry-pick
+          git cherry-pick $(git merge-base master $$BRANCH_NAME)..$$BRANCH_NAME --oneline
+          git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation
         if: contains(github.event.comment.body, 'command--cherry-pick')

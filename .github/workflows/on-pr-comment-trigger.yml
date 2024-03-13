@@ -132,18 +132,18 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const prBranchName = process.env.BRANCH_NAME;
+            const { BRANCH_NAME: prBranchName, TARGET_CHERRY_PICK_BRANCH: targetBranch } = process.env;
+
+            const newBranchName = `${prBranchName}--cherry-pick`
             const commentBody = context.payload.comment.body;
-            const prTitle = `Cherry pick from ${prBranchName} to ${context.payload.pull_request.base.ref}`;
-            const prBody = `
-            This PR is created to cherry pick all the commits from ${prBranchName} to ${context.payload.pull_request.base.ref}.
-            `;
+            const prTitle = `Cherry pick from ${prBranchName} to ${newBranchName}`;
+            const prBody = `This PR is created to cherry pick all the commits from ${prBranchName} to ${newBranchName}.`;
             const pr = await github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: prTitle,
-              head: `${prBranchName}--cherry-pick`,
-              base: "master",
+              head: newBranchName,
+              base: targetBranch,
               body: prBody
             });
             const commentType = "Cherry picking PR";

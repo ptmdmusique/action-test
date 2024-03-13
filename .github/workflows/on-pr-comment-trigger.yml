@@ -102,6 +102,9 @@ jobs:
         # All the commits are taken from the current branch
         run: |
           echo "BRANCH_NAME=${BRANCH_NAME}"
+
+          git fetch origin $BASE_BRANCH
+
           git fetch origin $BRANCH_NAME
           git checkout $BRANCH_NAME
 

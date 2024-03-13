@@ -29,11 +29,16 @@ jobs:
               repo: context.repo.repo,
               pull_number: curPRNumber
             });
+
             const branchName = curPR.data.head.ref;
+            const prUrl = curPR.data.html_url;
+
             console.info("Working on branch", branchName);
             core.setOutput('BRANCH_NAME', branchName);
+            core.setOutput('PR_URL', prUrl);
     outputs:
       BRANCH_NAME: ${{ steps.setup.outputs.BRANCH_NAME }}
+      PR_URL: ${{ steps.setup.outputs.PR_URL }}
 
   notify-start:
     needs: [setup_env]
@@ -85,6 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}
+      PR_URL: ${{ needs.setup_env.outputs.PR_URL }}
     steps:
       - uses: actions/checkout@v2
 
@@ -132,12 +138,15 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { BRANCH_NAME: prBranchName, TARGET_CHERRY_PICK_BRANCH: targetBranch } = process.env;
+            const { BRANCH_NAME: prBranchName, TARGET_CHERRY_PICK_BRANCH: targetBranch, PR_URL: mainPRUrl } = process.env;
 
             const newBranchName = `${prBranchName}--cherry-pick`
             const commentBody = context.payload.comment.body;
-            const prTitle = `Cherry pick from ${prBranchName} to ${newBranchName}`;
-            const prBody = `This PR is created to cherry pick all the commits from ${prBranchName} to ${newBranchName}.`;
+            const prTitle = `chore: cherry pick ${prBranchName} 🍒⛏`;
+            const prBody = `
+              This PR is created to cherry pick 🍒⛏ all the commits from ${prBranchName} to ${newBranchName}.
+              Main PR can be found [here](${mainPRUrl})
+            `;
             const pr = await github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

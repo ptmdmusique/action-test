@@ -144,7 +144,7 @@ jobs:
             const commentBody = context.payload.comment.body;
             const prTitle = `chore: cherry pick ${prBranchName} 🍒⛏`;
             const prBody = `
-              This PR is created to cherry pick 🍒⛏ all the commits from ${prBranchName} to ${newBranchName}.
+              This PR is created to cherry pick 🍒⛏ all the commits from \`${prBranchName}\` to \`${newBranchName}\`.
               Main PR can be found [here](${mainPRUrl})
             `;
             const pr = await github.pulls.create({

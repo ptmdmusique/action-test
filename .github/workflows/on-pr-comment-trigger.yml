@@ -5,7 +5,7 @@ on:
     types: [created, edited]
 
 jobs:
-  setup-env:
+  setup_env:
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -32,6 +32,7 @@ jobs:
       BRANCH_NAME: ${{ steps.setup.outputs.BRANCH_NAME }}
 
   notify-start:
+    needs: [setup_env]
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -73,12 +74,12 @@ jobs:
               body
             });
 
-  run-commands:
+  run_commands:
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: ${{ needs.setup-env.outputs.BRANCH_NAME }}
+      BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}
     steps:
       - uses: actions/checkout@v2
 
@@ -160,7 +161,8 @@ jobs:
               body
             });
 
-  notify-end:
+  notify_end:
+    needs: [run_commands]
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest

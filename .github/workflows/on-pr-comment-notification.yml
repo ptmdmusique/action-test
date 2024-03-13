@@ -23,6 +23,7 @@ jobs:
               owner,
               repo,
             });
+
             const commentType = "Available commands";
             const botComment = comments.data.find(comment => comment.body.includes(commentType));
             if (!botComment) {

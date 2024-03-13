@@ -108,6 +108,8 @@ jobs:
         # All the commits are taken from the current branch
         run: |
           echo "BRANCH_NAME=${BRANCH_NAME}"
+          echo "TARGET_CHERRY_PICK_BRANCH=${TARGET_CHERRY_PICK_BRANCH}"
+          echo "BASE_BRANCH=${BASE_BRANCH}"
 
           git fetch origin $BASE_BRANCH
 
@@ -119,6 +121,7 @@ jobs:
 
           new_branch_name="${BRANCH_NAME}--cherry-pick"
           git checkout -b $new_branch_name
+          echo "New branch name: $new_branch_name"
 
           start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
           echo "Start commit: $start_commit"

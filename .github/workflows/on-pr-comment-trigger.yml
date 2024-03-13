@@ -160,6 +160,13 @@ jobs:
               body
             });
 
+  notify-end:
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
       - name: notify done
         uses: actions/github-script@v3
         with:

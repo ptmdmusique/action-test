@@ -109,7 +109,7 @@ jobs:
           git checkout $TARGET_CHERRY_PICK_BRANCH
 
           git checkout -b $BRANCH_NAME--cherry-pick
-          echo "Cherry picking from ${$(git merge-base $BASE_BRANCH $BRANCH_NAME)} commit to $BRANCH_NAME commit"
+          echo "Cherry picking from commit $(git merge-base $BASE_BRANCH $BRANCH_NAME) to commit $BRANCH_NAME"
           git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME
           git push origin $BRANCH_NAME--cherry-pick
 

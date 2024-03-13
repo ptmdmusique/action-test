@@ -19,6 +19,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             console.log('context.payload:', context.payload)
+            console.log('github:', github);
             const branchName = context.payload.pull_request.head.ref;
             core.setOutput('BRANCH_NAME', branchName);
 

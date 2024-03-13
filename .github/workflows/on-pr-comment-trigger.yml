@@ -117,10 +117,11 @@ jobs:
           git fetch origin $TARGET_CHERRY_PICK_BRANCH
           git checkout $TARGET_CHERRY_PICK_BRANCH
 
-          git checkout -b $BRANCH_NAME--cherry-pick
+          new_branch_name="${BRANCH_NAME}--cherry-pick"
+          git checkout -b $new_branch_name
 
-          echo "Setting author name and email to the original author of the commit"
           start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
+          echo "Setting author name and email to the original author of the commit $start_commit"
 
           author_line="$(git show -s --format='%an <%ae>' $start_commit)"
           echo "Author line: $author_line"
@@ -131,7 +132,7 @@ jobs:
 
           echo "Cherry picking from commit $start_commit to commit $BRANCH_NAME"
           git cherry-pick $start_commit..$BRANCH_NAME --strategy=recursive --strategy-option=theirs
-          git push origin $BRANCH_NAME--cherry-pick
+          git push origin $new_branch_name
 
       - name: cherry-pick pr creation
         if: contains(github.event.comment.body, 'command--cherry-pick')

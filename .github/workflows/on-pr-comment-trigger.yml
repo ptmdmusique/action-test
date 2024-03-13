@@ -120,7 +120,7 @@ jobs:
           git checkout -b $BRANCH_NAME--cherry-pick
 
           echo "Setting author name and email to the original author of the commit"
-          start_commit="$(git merge-base $BRANCH_NAME $BRANCH_NAME)"
+          start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
 
           author_line="$(git show -s --format='%an <%ae>' $start_commit)"
           echo "Author line: $author_line"
@@ -130,7 +130,7 @@ jobs:
           git config user.email "$author_email"
 
           echo "Cherry picking from commit $start_commit to commit $BRANCH_NAME"
-          git cherry-pick $start_commit^..$BRANCH_NAME --strategy=recursive --strategy-option=theirs
+          git cherry-pick $start_commit..$BRANCH_NAME --strategy=recursive --strategy-option=theirs
           git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation

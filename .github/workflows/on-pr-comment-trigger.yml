@@ -112,9 +112,10 @@ jobs:
           echo "BASE_BRANCH=${BASE_BRANCH}"
 
           git fetch origin $BASE_BRANCH
-
           git fetch origin $BRANCH_NAME
-          git checkout $BRANCH_NAME
+
+          start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
+          echo "Start commit: $start_commit"
 
           git fetch origin $TARGET_CHERRY_PICK_BRANCH
           git checkout $TARGET_CHERRY_PICK_BRANCH
@@ -123,8 +124,6 @@ jobs:
           git checkout -b $new_branch_name
           echo "New branch name: $new_branch_name"
 
-          start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
-          echo "Start commit: $start_commit"
 
           echo "Setting up git user for cherry-pick"
           git config user.name "Commit bot"

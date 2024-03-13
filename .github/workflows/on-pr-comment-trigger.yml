@@ -113,7 +113,7 @@ jobs:
 
           git checkout -b $BRANCH_NAME--cherry-pick
 
-          start_commit=$(git merge-base master test-branch)
+          start_commit=$(git merge-base $BASE_BRANCH $BRANCH_NAME)
 
           author_line=$(git show $start_commit | grep Author)
           author_name=$(echo "$author_line" | awk -F ': ' '{print $2}')

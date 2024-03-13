@@ -77,7 +77,7 @@ jobs:
   run_commands:
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
-    needs: [setup_env]
+    needs: [setup_env, notify-start]
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}

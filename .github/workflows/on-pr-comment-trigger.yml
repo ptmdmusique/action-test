@@ -98,10 +98,11 @@ jobs:
         # All the commits are taken from the current branch
         run: |
           echo "BRANCH_NAME=${BRANCH_NAME}"
+          git checkout $BRANCH_NAME
           git fetch origin master
           git checkout master
           git checkout -b $BRANCH_NAME--cherry-pick
-          git cherry-pick $(git merge-base master $BRANCH_NAME)..$BRANCH_NAME --oneline
+          git cherry-pick $(git merge-base master $BRANCH_NAME)..$BRANCH_NAME
           git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation

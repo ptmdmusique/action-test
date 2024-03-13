@@ -115,8 +115,7 @@ jobs:
           git fetch origin $BRANCH_NAME &&
           git checkout $BRANCH_NAME &&
 
-          start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)" &&
-          echo "Start commit: $start_commit" &&
+          echo "Start commit: $(git merge-base $BASE_BRANCH $BRANCH_NAME)" &&
 
           git fetch origin $TARGET_CHERRY_PICK_BRANCH &&
           git checkout $TARGET_CHERRY_PICK_BRANCH &&
@@ -130,8 +129,8 @@ jobs:
           git config user.name "Commit bot" &&
           git config user.email "no-email@no-email" &&
 
-          echo "Cherry picking from commit $start_commit to commit $BRANCH_NAME" &&
-          git cherry-pick $start_commit..$BRANCH_NAME --strategy=recursive --strategy-option=theirs &&
+          echo "Cherry picking from commit $(git merge-base $BASE_BRANCH $BRANCH_NAME) to commit $BRANCH_NAME" &&
+          git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME --strategy=recursive --strategy-option=theirs &&
           git push origin $new_branch_name
 
       - name: cherry-pick pr creation

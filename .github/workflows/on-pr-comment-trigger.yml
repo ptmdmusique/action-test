@@ -23,6 +23,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            console.log("User", context.payload.issue.pull_request.user);
+            console.log("User 2", context.payload);
             const curPRNumber = parseInt(context.payload.issue.pull_request.url.split('/').pop());
             const curPR = await github.pulls.get({
               owner: context.repo.owner,
@@ -113,7 +115,7 @@ jobs:
 
           git checkout -b $BRANCH_NAME--cherry-pick
           echo "Cherry picking from commit $(git merge-base $BASE_BRANCH $BRANCH_NAME) to commit $BRANCH_NAME"
-          git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME
+          git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME --strategy=recursive --strategy-option=theirs
           git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation

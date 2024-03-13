@@ -19,14 +19,15 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             console.log('context.payload:', context.payload);
-            const curPRNumber = parseInt(context.payload.pull_request.url.split('/').pop());
+            const curPRNumber = parseInt(context.payload.issue.pull_request.url.split('/').pop());
             const curPR = await github.pulls.get({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: curPRNumber
             });
             console.log('curPR:', curPR);
-            const branchName = context.payload.pull_request.head.ref;
+            const branchName = context.payload.issue.pull_request.head.ref;
+            console.log('branchName:', branchName)
             core.setOutput('BRANCH_NAME', branchName);
 
       - name: notify command

@@ -25,6 +25,7 @@ jobs:
               pull_number: curPRNumber
             });
             const branchName = curPR.data.head.ref;
+            console.info("Working on branch", branchName);
             core.setOutput('BRANCH_NAME', branchName);
 
       - name: notify command
@@ -75,10 +76,9 @@ jobs:
         # Cherry pick all the commits in the current branch to a new branch named `<cur-branch-name>--cherry-pick` `cherry-pick` branch
         # All the commits are taken from the current branch
         run: |
-          echo "BRANCH_NAME=${BRANCH_NAME}"
           git fetch origin master
           git checkout master
-          echo "BRANCH_NAME=${BRANCH_NAME}"
+          echo $BRANCH_NAME
           git checkout -b $BRANCH_NAME--cherry-pick
           git cherry-pick $(git merge-base master $BRANCH_NAME)..$BRANCH_NAME --oneline
           git push origin $BRANCH_NAME--cherry-pick

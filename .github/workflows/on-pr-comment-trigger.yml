@@ -6,6 +6,7 @@ on:
 
 env:
   TARGET_CHERRY_PICK_BRANCH: cherry-pick-base
+  BASE_BRANCH: master
 
 jobs:
   setup_env:
@@ -108,8 +109,8 @@ jobs:
           git checkout $TARGET_CHERRY_PICK_BRANCH
 
           git checkout -b $BRANCH_NAME--cherry-pick
-          echo "Cherry picking from ${git merge-base master $BRANCH_NAME} commit to $BRANCH_NAME commit"
-          git cherry-pick $(git merge-base master $BRANCH_NAME)..$BRANCH_NAME
+          echo "Cherry picking from ${$(git merge-base $BASE_BRANCH $BRANCH_NAME)} commit to $BRANCH_NAME commit"
+          git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME
           git push origin $BRANCH_NAME--cherry-pick
 
       - name: cherry-pick pr creation

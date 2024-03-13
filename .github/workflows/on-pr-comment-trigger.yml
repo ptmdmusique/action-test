@@ -121,14 +121,8 @@ jobs:
           git checkout -b $new_branch_name
 
           start_commit="$(git merge-base $BASE_BRANCH $BRANCH_NAME)"
-          echo "Setting author name and email to the original author of the commit $start_commit"
-
-          author_line="$(git show -s --format='%an <%ae>' $start_commit)"
-          echo "Author line: $author_line"
-          author_name="$(echo $author_line | cut -d' ' -f1)"
-          author_email="$(echo $author_line | cut -d' ' -f2)"
-          git config user.name "$author_name"
-          git config user.email "$author_email"
+          git config user.name "Commit bot"
+          git config user.email "no-email@no-email"
 
           echo "Cherry picking from commit $start_commit to commit $BRANCH_NAME"
           git cherry-pick $start_commit..$BRANCH_NAME --strategy=recursive --strategy-option=theirs

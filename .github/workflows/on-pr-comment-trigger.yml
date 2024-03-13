@@ -5,7 +5,7 @@ on:
     types: [created, edited]
 
 jobs:
-  run-commands:
+  setup-env:
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -14,6 +14,7 @@ jobs:
 
       # Store the branch name in an environment variable called BRANCH_NAME
       - name: set env
+        id: setup
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,6 +28,15 @@ jobs:
             const branchName = curPR.data.head.ref;
             console.info("Working on branch", branchName);
             core.setOutput('BRANCH_NAME', branchName);
+    outputs:
+      BRANCH_NAME: ${{ steps.setup.outputs.BRANCH_NAME }}
+
+  notify-start:
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
       - name: notify command
         uses: actions/github-script@v3
@@ -62,6 +72,15 @@ jobs:
               repo,
               body
             });
+
+  run-commands:
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ needs.setup-env.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v2
 
       - name: run joke
         if: contains(github.event.comment.body, 'command--joke')

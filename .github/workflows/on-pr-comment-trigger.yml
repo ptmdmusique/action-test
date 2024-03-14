@@ -67,7 +67,7 @@ jobs:
               const regex = /command--cherry-pick:([^ ]+)/;
 
               // Executing the regular expression on the comment
-              const match = regex.exec(comment);
+              const match = regex.exec(commentBody);
 
               // Extracting the branch name if a match is found
               let baseCherryPickBranch = "";

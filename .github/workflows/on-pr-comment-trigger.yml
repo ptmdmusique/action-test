@@ -124,29 +124,30 @@ jobs:
         # Cherry pick all the commits in the current branch to a new branch named `<cur-branch-name>--cherry-pick` `cherry-pick` branch
         # All the commits are taken from the current branch
         run: |
-          echo "BRANCH_NAME=${BRANCH_NAME}" &&
-          echo "TARGET_CHERRY_PICK_BRANCH=${TARGET_CHERRY_PICK_BRANCH}" &&
-          echo "BASE_BRANCH=${BASE_BRANCH}" &&
+          echo "--- 🍒⛏ BRANCH_NAME=${BRANCH_NAME}" &&
+          echo "--- 🍒⛏ TARGET_CHERRY_PICK_BRANCH=${TARGET_CHERRY_PICK_BRANCH}" &&
+          echo "--- 🍒⛏ BASE_BRANCH=${BASE_BRANCH}" &&
 
           git fetch origin $BASE_BRANCH &&
           git fetch origin $BRANCH_NAME &&
           git checkout $BRANCH_NAME &&
 
-          echo "Start commit: $(git merge-base $BASE_BRANCH $BRANCH_NAME)" &&
+          echo "--- 🍒⛏ Finding base commit between: $BASE_BRANCH and $BRANCH_NAME" &&
+          echo "--- 🍒⛏ Start commit: $(git merge-base $BASE_BRANCH $BRANCH_NAME)" &&
 
           git fetch origin $TARGET_CHERRY_PICK_BRANCH &&
           git checkout $TARGET_CHERRY_PICK_BRANCH &&
 
           new_branch_name="${BRANCH_NAME}--cherry-pick" &&
           git checkout -b $new_branch_name &&
-          echo "New branch name: $new_branch_name" &&
+          echo "--- 🍒⛏ New branch name: $new_branch_name" &&
 
 
-          echo "Setting up git user for cherry-pick" &&
+          echo "--- 🍒⛏ Setting up git user for cherry-pick" &&
           git config user.name "Commit bot" &&
           git config user.email "no-email@no-email" &&
 
-          echo "Cherry picking from commit $(git merge-base $BASE_BRANCH $BRANCH_NAME) to commit $BRANCH_NAME" &&
+          echo "--- 🍒⛏ Cherry picking from commit $(git merge-base $BASE_BRANCH $BRANCH_NAME) to commit $BRANCH_NAME" &&
           git cherry-pick $(git merge-base $BASE_BRANCH $BRANCH_NAME)..$BRANCH_NAME --strategy=recursive --strategy-option=theirs &&
           git push origin $new_branch_name
 

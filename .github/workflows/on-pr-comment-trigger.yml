@@ -50,6 +50,7 @@ jobs:
 
       - name: notify command
         uses: actions/github-script@v3
+        id: notify_start
         with:
           script: |
             const commentBody = context.payload.comment.body;
@@ -96,7 +97,7 @@ jobs:
               body
             });
     outputs:
-      TARGET_CHERRY_PICK_BRANCH: ${{ steps.setup.outputs.TARGET_CHERRY_PICK_BRANCH }}
+      TARGET_CHERRY_PICK_BRANCH: ${{ steps.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH }}
 
   run_commands:
     # This job only runs for pull request comments
@@ -106,7 +107,7 @@ jobs:
     env:
       BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}
       PR_URL: ${{ needs.setup_env.outputs.PR_URL }}
-      TARGET_CHERRY_PICK_BRANCH: ${{ needs.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH || env.TARGET_CHERRY_PICK_BRANCH }}
+      TARGET_CHERRY_PICK_BRANCH: ${{ needs.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH || vars.TARGET_CHERRY_PICK_BRANCH }}
     steps:
       - uses: actions/checkout@v2
 

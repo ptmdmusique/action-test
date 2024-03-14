@@ -31,7 +31,9 @@ jobs:
               **${commentType}**
                 - \`command--joke\` - log some random joke
                 - \`command--random-sum\` - log some random sum
+
                 - \`command--cherry-pick\` - cherry-pick the PR to the \`cherry-pick-base\` branch
+                - \`command--cherry-pick:<base-cherry-pick-branch>\` - cherry-pick the PR to the \`<base-cherry-pick-branch>\` branch
 
               **To run**
                 Make a new comment on the PR with the command you want to run

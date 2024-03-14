@@ -5,7 +5,7 @@ on:
     types: [created, edited]
 
 env:
-  TARGET_CHERRY_PICK_BRANCH: cherry-pick-base
+  TARGET_CHERRY_PICK_BRANCH: cherry-pick-base # Default cherry-pick branch
   BASE_BRANCH: master
 
 jobs:
@@ -62,6 +62,19 @@ jobs:
             }
             if (commentBody.includes('command--cherry-pick')) {
               commandToRunList.push('cherry-pick');
+
+              // Regular expression to match the cherry-pick command and extract the branch name
+              const regex = /command--cherry-pick:([^ ]+)/;
+
+              // Executing the regular expression on the comment
+              const match = regex.exec(comment);
+
+              // Extracting the branch name if a match is found
+              let baseCherryPickBranch = "";
+              if (match && match.length > 1) {
+                baseCherryPickBranch = match[1];
+                core.setOutput('TARGET_CHERRY_PICK_BRANCH', baseCherryPickBranch);
+              }
             }
 
             if (commandToRunList.length === 0) {

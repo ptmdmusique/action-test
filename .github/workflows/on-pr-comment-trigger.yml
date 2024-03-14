@@ -74,8 +74,9 @@ jobs:
               let baseCherryPickBranch = "";
               if (match && match.length > 1) {
                 baseCherryPickBranch = match[1];
-                core.setOutput('TARGET_CHERRY_PICK_BRANCH', baseCherryPickBranch);
               }
+
+              core.setOutput('TARGET_CHERRY_PICK_BRANCH', baseCherryPickBranch || process.env.TARGET_CHERRY_PICK_BRANCH);
             }
 
             if (commandToRunList.length === 0) {
@@ -107,7 +108,7 @@ jobs:
     env:
       BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}
       PR_URL: ${{ needs.setup_env.outputs.PR_URL }}
-      TARGET_CHERRY_PICK_BRANCH: ${{ needs.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH || vars.TARGET_CHERRY_PICK_BRANCH }}
+      TARGET_CHERRY_PICK_BRANCH: ${{ needs.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH  }}
     steps:
       - uses: actions/checkout@v2
 

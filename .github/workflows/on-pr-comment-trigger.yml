@@ -40,7 +40,7 @@ jobs:
       BRANCH_NAME: ${{ steps.setup.outputs.BRANCH_NAME }}
       PR_URL: ${{ steps.setup.outputs.PR_URL }}
 
-  notify-start:
+  notify_start:
     needs: [setup_env]
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
@@ -95,15 +95,18 @@ jobs:
               repo,
               body
             });
+    outputs:
+      TARGET_CHERRY_PICK_BRANCH: ${{ steps.setup.outputs.TARGET_CHERRY_PICK_BRANCH }}
 
   run_commands:
     # This job only runs for pull request comments
     if: ${{ github.event.issue.pull_request }}
-    needs: [setup_env, notify-start]
+    needs: [setup_env, notify_start]
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ needs.setup_env.outputs.BRANCH_NAME }}
       PR_URL: ${{ needs.setup_env.outputs.PR_URL }}
+      TARGET_CHERRY_PICK_BRANCH: ${{ needs.notify_start.outputs.TARGET_CHERRY_PICK_BRANCH || env.TARGET_CHERRY_PICK_BRANCH }}
     steps:
       - uses: actions/checkout@v2
 
